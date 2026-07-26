@@ -65,7 +65,7 @@ while True:
 
     all_products.extend(products)
 
-    print(f"Page {page}: {len(products)}")
+    #print(f"Page {page}: {len(products)}")
 
     if len(products) == 0:
         break
@@ -75,5 +75,3 @@ while True:
 
     #for item in data["items"]:
     #   print(item["description"])
-
-print(len(all_products))
