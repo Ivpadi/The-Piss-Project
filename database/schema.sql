@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS store CASCADE;
+DROP TABLE IF EXISTS location CASCADE;
+DROP TABLE IF EXISTS raw_product CASCADE;
+DROP TABLE IF EXISTS product CASCADE;
+DROP TABLE IF EXISTS product_mapping CASCADE;
+DROP TABLE IF EXISTS price_history CASCADE;
+
+
+
 CREATE TABLE store(
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -40,11 +49,11 @@ CREATE TABLE product(
     name VARCHAR(100) NOT NULL,
     brand VARCHAR(50) NOT NULL,
     category VARCHAR(50) NOT NULL,
-    container_type VARCHAR(50) NOT NULL,
+    container_type VARCHAR(50),
     pack_size INT NOT NULL,
     volume_ml INT NOT NULL,
-    abv DECIMAL(4,2) NOT NULL,
-    standard_drinks DECIMAL(4,2) NOT NULL
+    abv DECIMAL(4,2),
+    standard_drinks DECIMAL(4,2)
 );
  
 

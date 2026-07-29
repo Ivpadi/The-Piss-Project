@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
+from datetime import date, datetime
 
 
 HEADERS = {
@@ -75,3 +76,28 @@ while True:
 
     #for item in data["items"]:
     #   print(item["description"])
+
+all_cleaned_products = []
+
+def clean_products(all_products):
+
+    cleaned_product = {}
+
+    for prod in all_products:
+        cleaned_product["raw_name"] = prod["description"]
+        cleaned_product["product_url"] = "https://www.liquorland.co.nz/" + prod["stylecolour"]["urlkey"]
+        cleaned_product["image_url"] = prod["stylecolour"]["primaryimage"]["src"]
+        cleaned_product["last_seen"] = date.today()
+        cleaned_product["brand"] = prod["label"]
+        cleaned_product["category"] = prod["department"]
+        cleaned_product["container_type"] = get_container()
+        cleaned_product["pack_size"] = get_size()
+        cleaned_product["volume_ml"] = get_ml()
+        cleaned_product["abv"] = get_abv()
+        cleaned_product["standard_drinks"] = get_standards()
+        cleaned_product["price"] = prod["stylecolour"]["variants"][0]["unitprice"]
+        cleaned_product["scraped_at"] = datetime.now()
+
+        all_cleaned_products.append(cleaned_product)
+
+    return all_cleaned_products
