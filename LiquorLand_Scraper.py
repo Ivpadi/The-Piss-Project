@@ -3,6 +3,7 @@ import requests
 import json
 import re
 from datetime import date, datetime
+from extraction_methods import get_container, get_size
 
 
 HEADERS = {
@@ -74,8 +75,8 @@ while True:
     page += 1
 
 
-    #for item in data["items"]:
-    #   print(item["description"])
+    for prod in all_products:
+       print(prod["description"])
 
 all_cleaned_products = []
 
@@ -90,9 +91,9 @@ def clean_products(all_products):
         cleaned_product["last_seen"] = date.today()
         cleaned_product["brand"] = prod["label"]
         cleaned_product["category"] = prod["department"]
-        cleaned_product["container_type"] = get_container()
-        cleaned_product["pack_size"] = get_size()
-        cleaned_product["volume_ml"] = get_ml()
+        cleaned_product["container_type"] = get_container(prod["description"])
+        cleaned_product["pack_size"] = get_size(prod["description"])
+        cleaned_product["volume_ml"] = get_ml(prod["description"])
         cleaned_product["abv"] = get_abv()
         cleaned_product["standard_drinks"] = get_standards()
         cleaned_product["price"] = prod["stylecolour"]["variants"][0]["unitprice"]
