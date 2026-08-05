@@ -3,7 +3,7 @@ import requests
 import json
 import re
 from datetime import date, datetime
-from extraction_methods import get_container, get_size
+from extraction_methods import get_container, get_size, get_ml
 
 
 HEADERS = {

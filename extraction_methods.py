@@ -1,7 +1,7 @@
 import re
 
 text1 = "Haagen Lager can 440ml"
-text2 = "15 pack of Cans"
+text2 = "15 pack of Cans 330ml"
 
 
 def get_container(description):
@@ -42,7 +42,19 @@ def get_size(description):
 
 
 
+def get_ml(description):
+
+    mls = re.compile(r"\d+ml")
+
+    match = re.search(mls, description)
+
+    if match:
+
+        value = match.group(0)
+
+        return value
 
 
-test = get_size(text1)
+
+test = get_ml(text2)
 print(test)
