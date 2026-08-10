@@ -3,7 +3,7 @@ import requests
 import json
 import re
 from datetime import date, datetime
-from extraction_methods import get_container, get_size, get_ml
+from extraction_methods import get_container, get_size, get_ml, get_standards
 
 
 HEADERS = {
@@ -20,6 +20,8 @@ BASE_URL = "https://www.liquorland.co.nz/beer"
 def get_products():
 
     page = 1
+
+    temp = 0
 
     all_products = []
 
@@ -90,26 +92,27 @@ def get_abv(product_url):
     html = requests.get(product_url, headers=HEADERS)
 
     soup = BeautifulSoup(html.text, 'html.parser')
-
+    
     meta_tag = soup.find("meta", attrs={'name':'description'})
 
-    content = meta_tag.get('content')
+    if meta_tag:
+        content = meta_tag.get('content')
 
-    abv_check = re.compile(r"\d.\d%")
+        abv_check = re.compile(r"\d+\.\d%")
 
-    abv = re.search(abv_check, content)
+        abv = re.search(abv_check, content)
     
-    if abv:
-        return abv.group(0)
+        if abv:
+            return abv.group(0)
 
     else:
         return "Not Available"
 
 
-test_url = "https://www.liquorland.co.nz/export-gold-24-pack-bottles-330ml-9414339823338"
-test = get_abv(test_url)
+# test_url = "https://www.liquorland.co.nz/export-gold-24-pack-bottles-330ml-9414339823338"
+# test = get_abv(test_url)
 
-print(test)
+# print(test)
 
 
 def clean_products(all_products):
@@ -130,10 +133,11 @@ def clean_products(all_products):
         cleaned_product["pack_size"] = get_size(prod["description"])
         cleaned_product["volume_ml"] = get_ml(prod["description"])
         cleaned_product["abv"] = get_abv(cleaned_product["product_url"])
-        cleaned_product["standard_drinks"] = get_standards()
+        cleaned_product["standard_drinks"] = get_standards(cleaned_product["abv"], cleaned_product["volume_ml"])
         cleaned_product["price"] = prod["stylecolour"]["variants"][0]["unitprice"]
-        cleaned_product["scraped_at"] = datetime.now()
+        cleaned_product["scraped_at"] = datetime.now().strftime("%H:%M %d-%m-%Y")
 
         all_cleaned_products.append(cleaned_product)
 
     return all_cleaned_products
+    

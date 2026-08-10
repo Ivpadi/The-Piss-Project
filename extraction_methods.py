@@ -4,6 +4,7 @@ text1 = "Haagen Lager can 440ml"
 text2 = "15 pack of Cans 330ml"
 
 
+
 def get_container(description):
 
     bottle = re.compile(r"\bbottle\b", re.IGNORECASE)
@@ -55,6 +56,36 @@ def get_ml(description):
         return value
 
 
+def processing_for_standards(abv, ml):
 
-test = get_ml(text2)
-print(test)
+    if not abv or ml:
+        return -1, -1
+
+    clean_abv = abv.replace("%", "")
+
+    clean_abv = float(clean_abv) / 100
+
+    clean_ml = ml.replace("ml", "")
+
+    return clean_abv, float(clean_ml)
+
+
+
+def get_standards(abv, ml):
+
+    if abv == "Not Available":
+        return "No Info Available"
+
+    clean_abv, clean_ml = processing_for_standards(abv, ml)
+
+    if clean_ml or clean_abv == -1:
+        return "No Info Available"
+
+    standards = clean_ml * clean_abv * 0.789 / 10
+
+    return round(standards, 1)
+
+
+
+# test = get_standards("5.0%", "330ml")
+# print(test)
