@@ -30,22 +30,21 @@ CREATE TABLE location(
 CREATE TABLE raw_product(
     id SERIAL PRIMARY KEY,
     raw_name VARCHAR(100) NOT NULL,
-    product_url VARCHAR(255) UNIQUE NOT NULL,
+    product_url VARCHAR(255) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     last_seen TIMESTAMP NOT NULL,
-    store_id INT NOT NULL,
     location_id INT NOT NULL,
-    CONSTRAINT fk_raw_product_store
-        FOREIGN KEY (store_id)
-            REFERENCES store(id),
     CONSTRAINT fk_location
         FOREIGN KEY (location_id)
-            REFERENCES location(id)
+            REFERENCES location(id),
+    CONSTRAINT uq_raw_prod_url_location
+        UNIQUE (product_url, location_id)
 );
  
 
 CREATE TABLE product(
     id SERIAL PRIMARY KEY,
+    product_key VARCHAR(150) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
     brand VARCHAR(50) NOT NULL,
     category VARCHAR(50) NOT NULL,

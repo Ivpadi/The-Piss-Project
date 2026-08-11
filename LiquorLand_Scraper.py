@@ -3,7 +3,6 @@ import requests
 import json
 import re
 from datetime import date, datetime
-from extraction_methods import get_container, get_size, get_ml, get_standards
 
 
 HEADERS = {
@@ -16,7 +15,8 @@ HEADERS = {
 BASE_URL = "https://www.liquorland.co.nz/beer"
 
 
-
+# This is a scraper for liquorland that loops through each product
+# extracting all the information required to add to db
 def get_products():
 
     page = 1
@@ -25,6 +25,7 @@ def get_products():
 
     all_products = []
 
+    # Loops through each "page" (load items button) to collect products
     while True:
 
         url = f"{BASE_URL}?p={page}&s%5Brelevance%5D=desc"
@@ -33,6 +34,7 @@ def get_products():
 
         soup = BeautifulSoup(html.text, 'html.parser')
 
+        # Finds the scrip tag that containe 'window.category (where info is stored about the products in liquorland)
         script_tag = soup.find('script', string= lambda s: s and 'window.category' in s)
 
 
@@ -42,6 +44,7 @@ def get_products():
 
         raw_text = script_tag.text
 
+        # Finds the start of the info - 'window.category ...{PRODUCT_INFORMATION}
         start = raw_text.find("...{") + 3
 
         brace_count = 0
@@ -129,9 +132,6 @@ def clean_products(all_products):
         cleaned_product["last_seen"] = date.today()
         cleaned_product["brand"] = prod["label"]
         cleaned_product["category"] = prod["department"]
-        cleaned_product["container_type"] = get_container(prod["description"])
-        cleaned_product["pack_size"] = get_size(prod["description"])
-        cleaned_product["volume_ml"] = get_ml(prod["description"])
         cleaned_product["abv"] = get_abv(cleaned_product["product_url"])
         cleaned_product["standard_drinks"] = get_standards(cleaned_product["abv"], cleaned_product["volume_ml"])
         cleaned_product["price"] = prod["stylecolour"]["variants"][0]["unitprice"]
