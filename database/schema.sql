@@ -63,9 +63,6 @@ CREATE TABLE product_mapping(
         REFERENCES product(id)
 );
 
- 
-
-
 
 CREATE TABLE price_history(
     id SERIAL PRIMARY KEY,

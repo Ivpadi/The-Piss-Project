@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
-from datetime import date, datetime
 
 
 HEADERS = {
@@ -129,13 +128,9 @@ def clean_products(all_products):
         cleaned_product["raw_name"] = prod["description"]
         cleaned_product["product_url"] = "https://www.liquorland.co.nz/" + prod["stylecolour"]["urlkey"]
         cleaned_product["image_url"] = prod["stylecolour"]["primaryimage"]["src"]
-        cleaned_product["last_seen"] = date.today()
         cleaned_product["brand"] = prod["label"]
         cleaned_product["category"] = prod["department"]
-        cleaned_product["abv"] = get_abv(cleaned_product["product_url"])
-        cleaned_product["standard_drinks"] = get_standards(cleaned_product["abv"], cleaned_product["volume_ml"])
         cleaned_product["price"] = prod["stylecolour"]["variants"][0]["unitprice"]
-        cleaned_product["scraped_at"] = datetime.now().strftime("%H:%M %d-%m-%Y")
 
         all_cleaned_products.append(cleaned_product)
 
